@@ -14,25 +14,33 @@ const db = pgp(dbConfig);
 async function createTables() {
   try {
     // Define SQL queries for creating the "products" and "users" tables
-    const createProductsTableQuery = `CREATE TABLE IF NOT EXISTS
-    Products(
+    const createProductsTableQuery = `
+    CREATE TABLE IF NOT EXISTS
+    Products (
       id SERIAL PRIMARY KEY,
       product_name VARCHAR NOT NULL,
       SKU VARCHAR NOT NULL UNIQUE,
       image VARCHAR,
       price VARCHAR NOT NULL,
-      description VARCHAR
-    )`;;
+      description VARCHAR,
+      createdAt TIMESTAMPTZ DEFAULT NOW(),
+      updatedAt TIMESTAMPTZ DEFAULT NOW()
+    )
+`;
+
     
 
-    const createUsersTableQuery = `
-      CREATE TABLE IF NOT EXISTS users (
-        id serial PRIMARY KEY,
-        user_name VARCHAR(128) NOT NULL UNIQUE,
-        password VARCHAR(128) NOT NULL,
-        email VARCHAR(128) NOT NULL UNIQUE
-      );
-    `;
+const createUsersTableQuery = `
+CREATE TABLE IF NOT EXISTS users (
+  id SERIAL PRIMARY KEY,
+  user_name VARCHAR(128) NOT NULL UNIQUE,
+  password VARCHAR(128) NOT NULL,
+  email VARCHAR(128) NOT NULL UNIQUE,
+  createdAt TIMESTAMPTZ DEFAULT NOW(),
+  updatedAt TIMESTAMPTZ DEFAULT NOW()
+)
+`;
+
 
     // Execute the queries
     await db.none(createProductsTableQuery);

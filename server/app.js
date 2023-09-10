@@ -1,5 +1,6 @@
 const Hapi = require('@hapi/hapi');
 const routes = require('./routes/index.js');
+const checkAuthorizationForSpecificAPI = require('./middlewares/authentication.js');
 const pgp = require('pg-promise')();
 require('dotenv').config()
 
@@ -12,12 +13,17 @@ const dbConfig = {
 };
 
 const db = pgp(dbConfig);
+const server = Hapi.server({
+  port: 3000,
+  host: 'localhost',
+});
+
+
+server.ext('onPreResponse', (request, h) => {
+  return checkAuthorizationForSpecificAPI(request, h,db);
+});
 
 const init = async () => {
-  const server = Hapi.server({
-    port: 3000,
-    host: 'localhost',
-  });
 
   // Register routes and pass the db object
   server.route(routes(db));

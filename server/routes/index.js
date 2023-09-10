@@ -1,9 +1,9 @@
-const handlers = require('./handlers.js'); // Import the handler module
+const handlers = require("./handlers.js"); // Import the handler module
 
 module.exports = (db) => [
   {
-    method: 'GET',
-    path: '/users',
+    method: "GET",
+    path: "/users",
     handler: async (request, h) => {
       try {
         // Use the handler.getAllUsers function to fetch data
@@ -11,7 +11,66 @@ module.exports = (db) => [
         return users;
       } catch (error) {
         console.error(error);
-        return h.response('Error fetching users').code(500);
+        return h.response("Error fetching users").code(500);
+      }
+    },
+  },
+
+  {
+    method: "POST",
+    path: "/register",
+    handler: async (request, h) => {
+      try {
+        // Use the handler.getAllUsers function to fetch data
+        const register = await handlers.registerUser(request, h, db);
+
+        return register;
+      } catch (error) {
+        console.error(error);
+      }
+    },
+  },
+
+  {
+    method: "POST",
+    path: "/login",
+    handler: async (request, h) => {
+      try {
+        // Use the handler.getAllUsers function to fetch data
+        const login = await handlers.login(request, h, db);
+
+        return login;
+      } catch (error) {
+        console.error(error);
+      }
+    },
+  },
+
+  {
+    method: "GET",
+    path: "/products",
+
+    handler: async (request, h) => {
+      try {
+        const products = await handlers.getAllProducts(db);
+        return products;
+      } catch (error) {
+        console.error(error);
+        return h.response("Error fetching products").code(500);
+      }
+    },
+  },
+  {
+    method: "GET",
+    path: "/products/{id}",
+
+    handler: async (request, h) => {
+      try {
+        const products = await handlers.getOneProducts(db);
+        return products;
+      } catch (error) {
+        console.error(error);
+        return h.response("Error fetching products").code(500);
       }
     },
   },
