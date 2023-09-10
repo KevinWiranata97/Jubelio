@@ -1,13 +1,14 @@
 const Hapi = require('@hapi/hapi');
 const routes = require('./routes/index.js');
 const pgp = require('pg-promise')();
+require('dotenv').config()
 
 const dbConfig = {
-  host: 'localhost',
-  port: 5433,
-  database: 'jubelio',
-  user: 'postgres',
-  password: 'souleater123',
+  host: process.env.host,
+  port: process.env.port,
+  database: process.env.database,
+  user: process.env.user,
+  password: process.env.password,
 };
 
 const db = pgp(dbConfig);
