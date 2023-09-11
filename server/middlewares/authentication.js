@@ -16,19 +16,22 @@ const checkAuthorizationForSpecificAPI = async (request, h,db) => {
       }).code(401);
     }
     
-  
-  
-    let decode =verifyToken(authorization)
+    if(authorization){
+      let decode =verifyToken(authorization)
     
  
     
-    const findUser = await db.one(`SELECT * FROM "users" WHERE "id" = ${decode.id}`);
-
-    request.userAccess = {
-      id: findUser.id,
-      email: findUser.email,
-      userName: findUser.user_name
-    };
+      const findUser = await db.one(`SELECT * FROM "users" WHERE "id" = ${decode.id}`);
+  
+      request.userAccess = {
+        id: findUser.id,
+        email: findUser.email,
+        userName: findUser.user_name
+      };
+  
+    }
+  
+  
 
     return h.continue;
   } catch (error) {

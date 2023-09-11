@@ -66,9 +66,63 @@ module.exports = (db) => [
 
     handler: async (request, h) => {
       try {
-        const products = await handlers.getOneProducts(db);
+   
+
+        const products = await handlers.getOneProducts(request,h,db);
         return products;
       } catch (error) {
+        console.log(error);
+        console.error(error);
+        return h.response("Error fetching products").code(500);
+      }
+    },
+  },
+  {
+    method: "POST",
+    path: "/products",
+
+    handler: async (request, h) => {
+      try {
+   
+
+        const products = await handlers.addProducts(request,h,db);
+        return products;
+      } catch (error) {
+       
+        console.error(error);
+        return h.response("Error fetching products").code(500);
+      }
+    },
+  },
+  {
+    method: "PUT",
+    path: "/products/{id}",
+
+    handler: async (request, h) => {
+      try {
+   
+
+        const products = await handlers.editProducts(request,h,db);
+        return products;
+      } catch (error) {
+       
+        console.error(error);
+        return h.response("Error fetching products").code(500);
+      }
+    },
+  },
+  {
+    method: "DELETE",
+    path: "/products/{id}",
+
+    handler: async (request, h) => {
+      try {
+   
+
+        const products = await handlers.deleteProducts(request,h,db);
+        return products;
+      } catch (error) {
+       
         console.error(error);
         return h.response("Error fetching products").code(500);
       }

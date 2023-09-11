@@ -24,11 +24,25 @@ const registerUser = async (request, h, db) => {
     await db.query(`INSERT INTO Users(user_name, password, email)
     VALUES ('${username}', '${hash}', '${email}')`);
     // Return a response
-    return h.response("User registered successfully").code(200);
+    return h.response({
+      message:'User registered successfully',
+      data:[]
+    }).code(201);
   } catch (error) {
-    console.error(error);
-    return h.response("Error registering user").code(500);
+    if(error.message === 'duplicate key value violates unique constraint "users_user_name_key"'){
+   
+      return h.response({
+        message:'User already registered',
+        data:[]
+      }).code(400);
+    }else{
+      return h.response({
+        message:"error registering user"
+      }).code(500);
+    }
   }
+
+  
 };
 
 
@@ -62,6 +76,7 @@ const login = async (request, h, db) => {
 
         return h.response({
           message:'User login successful',
+          name:findUser.user_name,
           authorization:authorization,
           data:[]
         }).code(200);
@@ -74,7 +89,11 @@ const login = async (request, h, db) => {
       }
     } else {
       // User not found, return an error response
-      return h.response('User not found').code(404);
+      return h.response({
+        message:'Invalid username or password',
+       
+        data:[]
+      }).code(404);
     }
   } catch (error) {
     console.error(error);
@@ -85,7 +104,8 @@ const login = async (request, h, db) => {
 const getAllProducts = async (db) => {
   try {
     // Use the db object to query the database
-    const products = await db.any('SELECT * FROM "products"'); // Use double quotes around "user" if it's a reserved keyword
+    const products = await db.any('SELECT * FROM "products" ORDER BY id ASC');
+// Use double quotes around "user" if it's a reserved keyword
 
     return products;
   } catch (error) {
@@ -94,15 +114,121 @@ const getAllProducts = async (db) => {
   }
 };
 
-const getOneProducts = async (db) => {
+const getOneProducts = async (request,h,db) => {
   try {
     const id = request.params.id;
+
     const result = await db.query(
       `SELECT * FROM Products Where id = '${id}'`
     );
-    return h.response(result[0]).code(200);
+
+    if(result.length < 1) {
+      return h.response({
+        statusCode: 404,
+        error: 'not found',
+        message: `Product  with id ${id} not found`,
+      }).code(401)
+    }
+    return result
   } catch (error) {
     console.log(error);
+  }
+};
+
+
+const addProducts = async (request,h,db) => {
+  try {
+    const { product_name, image, sku, price, description } =
+    request.payload;
+
+   const result = await db.query(`INSERT INTO Products(product_name, image, SKU, price, description)
+    values ('${product_name}', '${image}', '${sku}', '${price}', '${description}')`);
+
+
+    return h.response({
+      message:'success add product',
+      data:[]
+    }).code(201);
+  } catch (error) {
+    console.log(error);
+    if(error.message === 'duplicate key value violates unique constraint "products_sku_key"'){
+   
+      return h.response({
+        message:'duplicate sku on new product',
+        data:[]
+      }).code(400);
+    }
+  }
+};
+
+const editProducts = async (request,h,db) => {
+  try {
+    const id = request.params.id;
+    const { product_name, image, sku, price, description } =
+    request.payload;
+    const findProduct = await db.query(
+      `SELECT * FROM Products Where id = '${id}'`
+    );
+    if (findProduct.length === 0) {
+      return h.response({
+        statusCode: 404,
+        error: 'not found',
+        message: `Product  with id ${id} not found`,
+      }).code(401)
+    }
+
+    await db.query(
+      `UPDATE Products SET product_name = '${product_name}', image = '${image}', sku = '${sku}', price = '${price}', description = '${description}' WHERE id = '${id}'`
+    );
+
+
+    return h.response({
+      message:'successfuily updated product',
+      data:[]
+    }).code(201);
+  } catch (error) {
+    console.log(error);
+    if(error.message === 'duplicate key value violates unique constraint "products_sku_key"'){
+   
+      return h.response({
+        message:'duplicate sku on new product',
+        data:[]
+      }).code(400);
+    }
+  }
+};
+
+const deleteProducts = async (request,h,db) => {
+  try {
+    const id = request.params.id;
+
+    const findProduct = await db.query(
+      `SELECT * FROM Products Where id = '${id}'`
+    );
+    if (findProduct.length === 0) {
+      return h.response({
+        statusCode: 404,
+        error: 'not found',
+        message: `Product  with id ${id} not found`,
+      }).code(401)
+    }
+
+    await db.query(`DELETE FROM Products WHERE id = '${id}'`);
+
+
+    return h.response({
+      message:'successfuily deleted product',
+      data:[]
+    }).code(201);
+  } catch (error) {
+    console.log(error);
+    if(error.message === 'duplicate key value violates unique constraint "products_sku_key"'){
+   
+      return h.response({
+        message:'duplicate sku on new product',
+        data:[]
+      }).code(400);
+    }
   }
 };
 module.exports = {
@@ -110,5 +236,8 @@ module.exports = {
   getAllProducts,
   getOneProducts,
   registerUser,
-  login
+  editProducts,
+  deleteProducts,
+  login,
+  addProducts
 };

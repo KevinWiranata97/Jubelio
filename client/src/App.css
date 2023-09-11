@@ -1,0 +1,13 @@
+.login-page, .register-page {
+  align-items: center;
+  background-image: url(https://loker-bali.id/wp-content/uploads/2022/07/jubelio-logo-pertner-transparant.png);
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  justify-content: center;
+}
+
+/* customStyles.css */
+.custom-button-width {
+  width: 100%; /* Adjust the width as needed */
+}
