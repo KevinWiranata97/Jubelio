@@ -15,4 +15,7 @@
 - npm start
 
 run test:
-npm run start:test
+
+- make database for testing
+- enter testing database credentials in env file
+- npm run start:test
