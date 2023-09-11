@@ -38,7 +38,7 @@ const registerUser = async (request, h, db) => {
     }else{
       return h.response({
         message:"error registering user"
-      }).code(500);
+      }).code(400);
     }
   }
 
@@ -144,19 +144,24 @@ const addProducts = async (request,h,db) => {
    const result = await db.query(`INSERT INTO Products(product_name, image, SKU, price, description)
     values ('${product_name}', '${image}', '${sku}', '${price}', '${description}')`);
 
+    const find = await db.query(
+      `SELECT * FROM Products Where sku = '${sku}'`
+    );
 
     return h.response({
       message:'success add product',
-      data:[]
+      data:find
     }).code(201);
   } catch (error) {
-    console.log(error);
+   
     if(error.message === 'duplicate key value violates unique constraint "products_sku_key"'){
    
       return h.response({
         message:'duplicate sku on new product',
         data:[]
       }).code(400);
+    }else{
+      console.error(error.message)
     }
   }
 };

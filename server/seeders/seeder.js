@@ -1,7 +1,14 @@
 const axios = require("axios");
 const pgp = require("pg-promise")();
 require("dotenv").config();
-const dbConfig = {
+const dbConfig = process.env.NODE_ENV === 'test' ? {
+  host: process.env.TEST_DB_HOST,
+  port: process.env.TEST_DB_PORT,
+  database: process.env.TEST_DB_NAME,
+  user: process.env.TEST_DB_USER,
+  password: process.env.TEST_DB_PASSWORD,
+}
+:{
   host: process.env.host,
   port: process.env.port,
   database: process.env.database,

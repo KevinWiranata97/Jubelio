@@ -2,21 +2,6 @@ const handlers = require("./handlers.js"); // Import the handler module
 
 module.exports = (db) => [
   {
-    method: "GET",
-    path: "/users",
-    handler: async (request, h) => {
-      try {
-        // Use the handler.getAllUsers function to fetch data
-        const users = await handlers.getAllUsers(db);
-        return users;
-      } catch (error) {
-        console.error(error);
-        return h.response("Error fetching users").code(500);
-      }
-    },
-  },
-
-  {
     method: "POST",
     path: "/register",
     handler: async (request, h) => {
@@ -83,10 +68,11 @@ module.exports = (db) => [
 
     handler: async (request, h) => {
       try {
-   
+
 
         const products = await handlers.addProducts(request,h,db);
-        return products;
+   
+        return products
       } catch (error) {
        
         console.error(error);

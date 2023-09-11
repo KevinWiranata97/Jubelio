@@ -4,7 +4,15 @@ const checkAuthorizationForSpecificAPI = require('./middlewares/authentication.j
 const pgp = require('pg-promise')();
 require('dotenv').config()
 const HapiCors = require('hapi-cors');
-const dbConfig = {
+
+const dbConfig = process.env.NODE_ENV === 'test' ? {
+  host: process.env.TEST_DB_HOST,
+  port: process.env.TEST_DB_PORT,
+  database: process.env.TEST_DB_NAME,
+  user: process.env.TEST_DB_USER,
+  password: process.env.TEST_DB_PASSWORD,
+}
+:{
   host: process.env.host,
   port: process.env.port,
   database: process.env.database,
@@ -12,13 +20,12 @@ const dbConfig = {
   password: process.env.password,
 };
 
+console.log(dbConfig);
+
 const db = pgp(dbConfig);
 const server = Hapi.server({
   port: 5000,
-  host: 'localhost',
-  routes: {
-    cors: true,
-  },
+  host: '0.0.0.0'
 });
 
 
@@ -39,6 +46,8 @@ const init = async () => {
 
   await server.start();
   console.log('Server running on %s', server.info.uri);
+  return server
+
 };
 
 process.on('unhandledRejection', (err) => {
@@ -46,8 +55,11 @@ process.on('unhandledRejection', (err) => {
   process.exit(1);
 });
 
-init();
+if (!module.parent) {
+  init();
+}
 
 module.exports = {
   db,
+init
 };

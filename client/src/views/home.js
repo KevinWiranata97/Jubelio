@@ -48,6 +48,7 @@ const Home = observer(() => {
     setSku("");
     setPrice("");
     setDescription("");
+    fetchProduct()
   }
 
   const cardImageStyle = {

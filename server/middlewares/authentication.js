@@ -22,7 +22,8 @@ const checkAuthorizationForSpecificAPI = async (request, h,db) => {
  
     
       const findUser = await db.one(`SELECT * FROM "users" WHERE "id" = ${decode.id}`);
-  
+      
+   
       request.userAccess = {
         id: findUser.id,
         email: findUser.email,
@@ -35,14 +36,14 @@ const checkAuthorizationForSpecificAPI = async (request, h,db) => {
 
     return h.continue;
   } catch (error) {
-    if(error.name === "JsonWebTokenError"){
+    if(error.name === "JsonWebTokenError" ||error.name === "QueryResultError" ){
       return h.response({
         statusCode: 401,
         error: 'Unauthorized',
         message: 'Invalid token',
       }).code(401);
     }
-  console.log(error);
+
   }
  
 };
