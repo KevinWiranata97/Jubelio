@@ -171,8 +171,6 @@ const Home = observer(() => {
     const startIndex = (page - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
 
-    console.log(startIndex,endIndex);
-
     // Fetch additional data for the current page only if there are more items
     if (endIndex <= items.length) {
       const newData = items.slice(startIndex, endIndex);
@@ -243,7 +241,7 @@ const Home = observer(() => {
                     >
                       <div className="row">
                         {items.map((product, index) => (
-                          <div key={product.id || index} className="col-md-3">
+                          <div key={ index} className="col-md-3">
                             <div className="card">
                               <div className="card">
                                 <img

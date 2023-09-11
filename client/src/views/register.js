@@ -119,7 +119,7 @@ export default function RegisterViews() {
                 type="submit"
                 className="btn btn-primary btn-lg btn-block"
               >
-                Sign in
+               Register
               </button>
             </form>
 
