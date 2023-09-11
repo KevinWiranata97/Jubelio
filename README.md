@@ -14,3 +14,5 @@
 - npm i
 - npm start
 
+run test:
+npm run start:test
