@@ -101,13 +101,13 @@ const login = async (request, h, db) => {
   }
 };
 
-const getAllProducts = async (db) => {
+const getAllProducts = async (request,h,db) => {
   try {
-    // Use the db object to query the database
+
     const products = await db.any('SELECT * FROM "products" ORDER BY id ASC');
-// Use double quotes around "user" if it's a reserved keyword
 
     return products;
+  
   } catch (error) {
     console.error(error);
     throw new Error("Error fetching users");

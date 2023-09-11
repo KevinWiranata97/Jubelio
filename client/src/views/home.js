@@ -9,27 +9,17 @@ import Swal from "sweetalert2";
 import InfiniteScroll from "react-infinite-scroll-component";
 const Home = observer(() => {
   const store = useMemo(() => new Store(), []);
-  //   const [currentPage, setCurrentPage] = useState(1);
-  //   const itemsPerPage = 8; // Number of items to display per page
-
+  
   const [product_name, setProduct_name] = useState("");
   const [image, setImage] = useState("");
   const [price, setPrice] = useState("");
   const [description, setDescription] = useState("");
   const [sku, setSku] = useState("");
   const [id, setId] = useState("");
-  //   const startIndex = (currentPage - 1) * itemsPerPage;
-  //   const endIndex = startIndex + itemsPerPage;
 
-  //   // Filter the products to display only those within the current page range
-  //   const productsToDisplay = store.products.slice(startIndex, endIndex);
-
-  //   // Function to handle page change
-  //   const handlePageChange = (pageNumber) => {
-  //     setCurrentPage(pageNumber);
-  //   };
   useEffect(() => {
-    fetchProduct();
+   fetchProduct()
+
   }, []);
 
   function submitHandler(e) {
@@ -157,10 +147,13 @@ const Home = observer(() => {
       });
 
       setItems(response.data);
+      store.setProducts(response.data);
     } catch (error) {
       console.log(error);
     }
   }
+
+
   const itemsPerPage = 8; // Number of items to display per page
   const [items, setItems] = useState([]);
   const [hasMore, setHasMore] = useState(true);
@@ -168,25 +161,28 @@ const Home = observer(() => {
   // Function to load more data
   // Function to load more data
   const fetchMoreData = () => {
+
     // Calculate the start and end index for the current page
     const startIndex = (page - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
 
     // Fetch additional data for the current page only if there are more items
-    if (endIndex <= items.length) {
-      const newData = items.slice(startIndex, endIndex);
+  
+      const newData = store.products.slice(startIndex, endIndex);
 
       // Append the new data to the 'items' state
       setItems([...items, ...newData]);
-
+      store.setProducts([...items, ...newData]);
       // Increment the page number
       setPage(page + 1);
 
+      
       // Check if there are more pages to load
-      if (endIndex >= items.length) {
+      if (endIndex >= store.products.length) {
         setHasMore(false);
       }
-    }
+    
+      
   };
 
   return (
@@ -235,14 +231,19 @@ const Home = observer(() => {
                   {/* /.card-header */}
                   <div className="card-body">
                     <InfiniteScroll
-                      dataLength={items.length}
+                      dataLength={store.products.length}
                       next={fetchMoreData}
                       hasMore={hasMore}
                       loader={<h4>Loading...</h4>}
+                        endMessage={
+    <p style={{ textAlign: 'center' }}>
+      <b>Yay! You have seen it all</b>
+    </p>
+  }
                     >
                       <div className="row">
-                        {items.map((product, index) => (
-                          <div key={ index} className="col-md-3">
+                        {store.products.map((product, index) => (
+                          <div key={index} className="col-md-3">
                             <div className="card">
                               <div className="card">
                                 <img

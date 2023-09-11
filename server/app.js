@@ -20,8 +20,6 @@ const dbConfig = process.env.NODE_ENV === 'test' ? {
   password: process.env.password,
 };
 
-console.log(dbConfig);
-
 const db = pgp(dbConfig);
 const server = Hapi.server({
   port: 5000,

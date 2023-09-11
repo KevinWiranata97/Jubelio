@@ -37,7 +37,7 @@ module.exports = (db) => [
 
     handler: async (request, h) => {
       try {
-        const products = await handlers.getAllProducts(db);
+        const products = await handlers.getAllProducts(request,h,db);
         return products;
       } catch (error) {
         console.error(error);
